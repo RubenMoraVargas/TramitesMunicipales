@@ -1,5 +1,7 @@
 package org.una.tramites.controllers;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation; 
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,21 +19,19 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.una.tramites.dtos.UsuarioDTO;
 import org.una.tramites.entities.Usuario;
-import org.una.tramites.services.IUsuarioService;
-import org.una.tramites.services.UsuarioServiceImplementation;
+import org.una.tramites.services.IUsuarioService; 
 import org.una.tramites.utils.MapperUtils;
 
 @RestController
 @RequestMapping("/usuarios")
+@Api(tags = {"Usuarios"})
 public class UsuarioController {
 
     @Autowired
-    private  IUsuarioService usuarioService;
+    private IUsuarioService usuarioService;
 
-    public  UsuarioController(){
-    usuarioService= new UsuarioServiceImplementation();
-    }
     @GetMapping()
+    @ApiOperation(value = "Obtiene una lista de todos los Usuarios", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
     public @ResponseBody
     ResponseEntity<?> findAll() {
         try {
@@ -46,8 +46,9 @@ public class UsuarioController {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/{id}")
+    @ApiOperation(value = "Obtiene un Usuario por su Id", response = UsuarioDTO.class, tags = "Usuarios")
     public ResponseEntity<?> findById(@PathVariable(value = "id") Long id) {
         try {
 
@@ -62,13 +63,17 @@ public class UsuarioController {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
-  @PutMapping("/login")
-    public @ResponseBody
-    ResponseEntity<?> update( @RequestBody Usuario usuarioData) {
+
+    @PutMapping("/login")
+    @ResponseBody
+    @ApiOperation(value = "Inicio de sesión para conseguir un token de acceso", response = UsuarioDTO.class, tags = "Seguridad")
+    public ResponseEntity<?> login(@PathVariable(value = "cedula") String cedula,@PathVariable(value = "password") String password) {
         try {
-            Optional<Usuario> usuarioFound = usuarioService.login(usuarioData);
-            if (usuarioFound.isPresent()) { 
+            Usuario usuario= new Usuario();
+            usuario.setCedula(cedula);
+            usuario.setPasswordEncriptado(password);
+            Optional<Usuario> usuarioFound = usuarioService.login(usuario);
+            if (usuarioFound.isPresent()) {
                 UsuarioDTO usuarioDto = MapperUtils.DtoFromEntity(usuarioFound.get(), UsuarioDTO.class);
                 return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
 
@@ -81,9 +86,8 @@ public class UsuarioController {
 
     }
 
-    
-    
     @GetMapping("/cedula/{cedula}")
+    @ApiOperation(value = "Obtiene una lista de Usuarios por cédula", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
     public ResponseEntity<?> findByCedulaAproximate(@PathVariable(value = "cedula") String cedula) {
         try {
             Optional<List<Usuario>> result = usuarioService.findByCedulaAproximate(cedula);
@@ -97,8 +101,9 @@ public class UsuarioController {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    
+
     @GetMapping("/nombre/{nombre}")
+    @ApiOperation(value = "Obtiene una lista de Usuarios por nombre completo", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
     public ResponseEntity<?> findByNombreCompletoAproximateIgnoreCase(@PathVariable(value = "nombre") String nombre) {
         try {
             Optional<List<Usuario>> result = usuarioService.findByNombreCompletoAproximateIgnoreCase(nombre);
@@ -115,10 +120,11 @@ public class UsuarioController {
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/")
-    public @ResponseBody
-    ResponseEntity<?> create(@RequestBody Usuario usuario) {
+    @ApiOperation(value = "Permite crear un Usuario", response = UsuarioDTO.class, tags = "Usuarios")
+    @ResponseBody
+    public ResponseEntity<?> create(@RequestBody Usuario usuario) {
         try {
-            Usuario usuarioCreated = usuarioService.create(usuario); 
+            Usuario usuarioCreated = usuarioService.create(usuario);
             UsuarioDTO usuarioDto = MapperUtils.DtoFromEntity(usuarioCreated, UsuarioDTO.class);
             return new ResponseEntity<>(usuarioDto, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -127,16 +133,18 @@ public class UsuarioController {
     }
 
     @PutMapping("/{id}")
-    public @ResponseBody
-    ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody Usuario usuarioModified) {
+    @ApiOperation(value = "Permite modificar un <b>Usuario</b> a partir de su Id", response = UsuarioDTO.class, tags = "Usuarios")
+    @ResponseBody
+    public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody Usuario usuarioModified) {
         try {
             Optional<Usuario> usuarioUpdated = usuarioService.update(usuarioModified, id);
-            if (usuarioUpdated.isPresent()) { 
+            if (usuarioUpdated.isPresent()) {
                 UsuarioDTO usuarioDto = MapperUtils.DtoFromEntity(usuarioUpdated.get(), UsuarioDTO.class);
                 return new ResponseEntity<>(usuarioDto, HttpStatus.OK);
 
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                
             }
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -145,6 +153,8 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
+    
+    @ApiOperation(value = "Permite eliminar un <b>Usuario</b> a partir de su Id", response = UsuarioDTO.class, tags = "Usuarios")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         try {
             usuarioService.delete(id);
@@ -155,6 +165,7 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/")
+    @ApiOperation(value = "Permite eliminar todos los <b>Usuarios</b>", response = UsuarioDTO.class,  tags = "Usuarios")
     public ResponseEntity<?> deleteAll() {
         try {
             usuarioService.deleteAll();
