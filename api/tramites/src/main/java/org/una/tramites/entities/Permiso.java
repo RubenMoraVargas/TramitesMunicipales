@@ -9,8 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
+import javax.persistence.Id; 
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -25,36 +24,39 @@ import lombok.ToString;
 import lombok.Setter;
 
 @Entity
-@Table(name = "departamentos")
+@Table(name = "permisos")
 public @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-class Departamento implements Serializable {
+class Permiso implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column( length = 100)
-    private String nombre;
+    @Column( length = 10)
+    private String codigo;
+
+    @Column(length = 100)
+    private String descripcion;
  
     @Column
     private boolean estado;
-
+      
+    @OneToMany(mappedBy = "permiso", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PermisoOtorgado> permisosOtorgados= new ArrayList<>();
+     
     @Column(name = "fecha_registro", updatable = false)
-    @Temporal(TemporalType.DATE)
     @Setter(AccessLevel.NONE)
+    @Temporal(TemporalType.DATE)
     private Date fechaRegistro;
- 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamento") 
-    private List<Usuario> usuarios= new ArrayList<>();
-    
+
     @Column(name = "fecha_modificacion")
     @Setter(AccessLevel.NONE)
     @Temporal(TemporalType.DATE)
     private Date fechaModificacion;
- 
+  
     private static final long serialVersionUID = 1L;
 
     @PrePersist

@@ -1,7 +1,7 @@
 package org.una.tramites.controllers;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation; 
+import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.una.tramites.dtos.DepartamentoDTO;
 import org.una.tramites.entities.Departamento;
-import org.una.tramites.services.IDepartamentoService; 
+import org.una.tramites.services.IDepartamentoService;
 import org.una.tramites.utils.MapperUtils;
 
 @RestController
@@ -30,10 +30,10 @@ public class DepartamentoController {
     @Autowired
     private IDepartamentoService departamentoService;
 
-    @GetMapping()
+    @GetMapping("/")
     @ApiOperation(value = "Obtiene una lista de todos los Departamentos", response = DepartamentoDTO.class, responseContainer = "List", tags = "Departamentos")
-    public @ResponseBody
-    ResponseEntity<?> findAll() {
+    @ResponseBody
+    public ResponseEntity<?> findAll() {
         try {
             Optional<List<Departamento>> result = departamentoService.findAll();
             if (result.isPresent()) {
@@ -63,7 +63,24 @@ public class DepartamentoController {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-  
+
+    @GetMapping("/estado/{value}")
+    @ApiOperation(value = "Obtiene una lista de los Departamentos por estado", response = DepartamentoDTO.class, responseContainer = "List", tags = "Departamentos")
+    @ResponseBody
+    public ResponseEntity<?> findByEstado(@PathVariable(value = "value") boolean value) {
+        try {
+            Optional<List<Departamento>> result = departamentoService.findByEstado(value);
+            if (result.isPresent()) {
+                List<DepartamentoDTO> departamentosDTO = MapperUtils.DtoListFromEntityList(result.get(), DepartamentoDTO.class);
+                return new ResponseEntity<>(departamentosDTO, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/")
     @ApiOperation(value = "Permite crear un Departamento", response = DepartamentoDTO.class, tags = "Departamentos")
@@ -90,7 +107,7 @@ public class DepartamentoController {
 
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-                
+
             }
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -99,7 +116,6 @@ public class DepartamentoController {
     }
 
     @DeleteMapping("/{id}")
-    
     @ApiOperation(value = "Permite eliminar un Departamento a partir de su Id", response = DepartamentoDTO.class, tags = "Departamentos")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         try {
@@ -111,7 +127,7 @@ public class DepartamentoController {
     }
 
     @DeleteMapping("/")
-    @ApiOperation(value = "Permite eliminar todos los Departamentos", response = DepartamentoDTO.class,  tags = "Departamentos")
+    @ApiOperation(value = "Permite eliminar todos los Departamentos", response = DepartamentoDTO.class, tags = "Departamentos")
     public ResponseEntity<?> deleteAll() {
         try {
             departamentoService.deleteAll();

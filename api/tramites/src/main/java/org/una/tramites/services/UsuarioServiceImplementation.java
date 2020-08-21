@@ -29,13 +29,13 @@ public class UsuarioServiceImplementation implements IUsuarioService {
     @Override
     @Transactional(readOnly = true)
     public Optional<List<Usuario>> findByCedulaAproximate(String cedula) {
-        return Optional.ofNullable(usuarioRepository.findByCedulaContaining(cedula));
+        return usuarioRepository.findByCedulaContaining(cedula);
     }
 
     @Override
     @Transactional(readOnly = true)
     public Optional<List<Usuario>> findByNombreCompletoAproximateIgnoreCase(String nombreCompleto) {
-        return Optional.ofNullable(usuarioRepository.findByNombreCompletoContainingIgnoreCase(nombreCompleto));
+        return usuarioRepository.findByNombreCompletoContainingIgnoreCase(nombreCompleto);
     }
 
     @Override
@@ -76,11 +76,11 @@ public class UsuarioServiceImplementation implements IUsuarioService {
 
     @Override
     public Optional<List<Usuario>> findByDepartamentoId(Long id) {
-        return Optional.ofNullable(usuarioRepository.findByDepartamentoId(id));
+        return usuarioRepository.findByDepartamentoId(id);
     }
 
     @Override
     public Optional<Usuario> findJefeByDepartamento(Long id) {
-         return Optional.ofNullable(usuarioRepository.findJefeByDepartamento(id));
-   } 
+        return Optional.ofNullable(usuarioRepository.findJefeByDepartamento(id));
+    }
 }

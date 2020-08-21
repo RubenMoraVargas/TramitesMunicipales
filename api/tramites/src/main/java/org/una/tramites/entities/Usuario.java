@@ -1,12 +1,18 @@
 package org.una.tramites.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -20,7 +26,7 @@ import lombok.ToString;
 import lombok.Setter;
 
 @Entity
-@Table(name = "Usuarios")
+@Table(name = "usuarios")
 public @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -41,28 +47,34 @@ class Usuario implements Serializable {
     private String cedula;
 
     @Column
-    private byte estado;
+    private boolean estado;
 
-    @Column(name = "departamento_id")
-    private Long departamentoId; 
+    @ManyToOne 
+    @JoinColumn(name="departamentos_id")
+    private Departamento departamento; 
     
     @Column(name = "fecha_registro", updatable = false)
     @Temporal(TemporalType.DATE)
     @Setter(AccessLevel.NONE)
     private Date fechaRegistro;
-
+ 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true) 
+    private List<PermisoOtorgado> permisosOtorgados= new ArrayList<>();
+    
     @Column(name = "fecha_modificacion")
     @Setter(AccessLevel.NONE)
     @Temporal(TemporalType.DATE)
     private Date fechaModificacion;
 
     @Column(name = "es_jefe")
-    private byte esJefe;
+    private boolean esJefe;
 
     private static final long serialVersionUID = 1L;
 
     @PrePersist
     public void prePersist() {
+        estado=true;
+        esJefe=false;
         fechaRegistro = new Date();
         fechaModificacion = new Date();
     }

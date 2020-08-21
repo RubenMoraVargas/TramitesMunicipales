@@ -30,7 +30,7 @@ public class UsuarioController {
     @Autowired
     private IUsuarioService usuarioService;
 
-    @GetMapping()
+    @GetMapping("/")
     @ApiOperation(value = "Obtiene una lista de todos los Usuarios", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
     public @ResponseBody
     ResponseEntity<?> findAll() {
@@ -86,9 +86,9 @@ public class UsuarioController {
 
     }
 
-    @GetMapping("/cedula/{term}")
+    @GetMapping("/cedula/{termino}")
     @ApiOperation(value = "Obtiene una lista de Usuarios por cédula", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
-    public ResponseEntity<?> findByCedulaAproximate(@PathVariable(value = "term") String term) {
+    public ResponseEntity<?> findByCedulaAproximate(@PathVariable(value = "termino") String term) {
         try {
             Optional<List<Usuario>> result = usuarioService.findByCedulaAproximate(term);
             if (result.isPresent()) {
@@ -102,11 +102,11 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/nombre/{term}")
+    @GetMapping("/nombre/{termino}")
     @ApiOperation(value = "Obtiene una lista de Usuarios por nombre completo", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
-    public ResponseEntity<?> findByNombreCompletoAproximateIgnoreCase(@PathVariable(value = "term") String term) {
+    public ResponseEntity<?> findByNombreCompletoAproximateIgnoreCase(@PathVariable(value = "termino") String term) {
         try {
-            Optional<List<Usuario>> result = usuarioService.findByNombreCompletoAproximateIgnoreCase(nombre);
+            Optional<List<Usuario>> result = usuarioService.findByNombreCompletoAproximateIgnoreCase(term);
             if (result.isPresent()) {
                 List<UsuarioDTO> usuariosDTO = MapperUtils.DtoListFromEntityList(result.get(), UsuarioDTO.class);
                 return new ResponseEntity<>(usuariosDTO, HttpStatus.OK);

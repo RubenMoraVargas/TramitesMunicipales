@@ -27,6 +27,10 @@ public class DepartamentoServiceImplementation implements IDepartamentoService {
     }
   
     @Override
+    public Optional<List<Departamento>> findByEstado(boolean estado) {
+         return departamentoRepository.findByEstado(estado) ;
+    }
+    @Override
     @Transactional
     public Departamento create(Departamento usuario) {
         return departamentoRepository.save(usuario);
@@ -55,6 +59,7 @@ public class DepartamentoServiceImplementation implements IDepartamentoService {
     public void deleteAll() {
         departamentoRepository.deleteAll();
     }
+
  
 
 }

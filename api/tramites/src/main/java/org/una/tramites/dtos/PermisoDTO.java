@@ -10,15 +10,12 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UsuarioDTO {
+public class PermisoDTO {
 
     private Long id;
-    private String nombreCompleto;
-    private String cedula;
-    private boolean estado;
+    private String codigo;
+    private String descripcion;
     private Date fechaRegistro;
     private Date fechaModificacion;
-    private Long departamentoId;
-    private boolean esJeFe;
-
+    private boolean estado;
 }

@@ -11,13 +11,13 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor 
 @ToString
-public class DepartamentoDTO {
+public class PermisoOtorgadoDTO {
  
-    private Long id; 
-    private String nombre;  
+    private Long id;   
+    private Long usuarioId;   
+    private Long permisoId; 
     private boolean estado; 
-    private Date fechaRegistro; 
-    private Date fechaModificacion;  
+    private Date fechaRegistro;   
      
 }
 
