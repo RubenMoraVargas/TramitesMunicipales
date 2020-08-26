@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.Contact; 
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -23,14 +23,14 @@ public class SwaggerConfiguration {
                 .apis(
                         RequestHandlerSelectors
                                 .basePackage("org.una.tramites.controllers"))
-                .paths(PathSelectors.any())
+                .paths(PathSelectors.regex("/.*"))
                 .build()
                 .apiInfo(apiInfo())
                 .tags(new Tag("Seguridad", "Metodos de Seguridad"),
-                         new Tag("Usuarios", "Entidad de Usuarios"),
-                         new Tag("Departamentos", "Entidad de Departamentos"),
-                         new Tag("Permisos", "Entidad de Permisos"),
-                         new Tag("Transacciones", "Entidad de Transacciones") 
+                        new Tag("Usuarios", "Entidad de Usuarios"),
+                        new Tag("Departamentos", "Entidad de Departamentos"),
+                        new Tag("Permisos", "Entidad de Permisos"),
+                        new Tag("Transacciones", "Entidad de Transacciones")
                 );
 
     }
@@ -44,4 +44,5 @@ public class SwaggerConfiguration {
                 new Contact("UNA Sede Región Brunca", "https://srb.una.ac.cr/index.php/es/", "decanatosrb@una.cr"),
                 "Apache-2.0", "http://www.apache.org/licenses/LICENSE-2.0", Collections.emptyList());
     }
+ 
 }

@@ -1,6 +1,7 @@
 package org.una.tramites.Initilizer;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.una.tramites.entities.Departamento;
 import org.una.tramites.entities.Permiso;
 import org.una.tramites.entities.PermisoOtorgado;
@@ -11,6 +12,7 @@ import org.una.tramites.repositories.IPermisoRepository;
 import org.una.tramites.repositories.ITransaccionRepository;
 import org.una.tramites.repositories.IUsuarioRepository;
 
+@Service
 public class DataInitializerServiceImplementation implements IDataInitializerService {
 
     @Autowired
