@@ -3,11 +3,13 @@ package org.una.tramites.services;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import org.una.tramites.entities.Permiso; 
+import org.una.tramites.entities.Permiso;
 
 public interface IPermisoService {
- 
+
     public Optional<Permiso> findById(Long id);
+
+    public Optional<Permiso> findByCodigo(String codigo);
 
     public Optional<List<Permiso>> findByEstado(boolean estado);
 
