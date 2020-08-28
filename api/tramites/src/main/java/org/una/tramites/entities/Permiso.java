@@ -1,8 +1,9 @@
 package org.una.tramites.entities;
 
-import java.io.Serializable;
+import java.io.Serializable;  
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -49,12 +50,12 @@ class Permiso implements Serializable {
      
     @Column(name = "fecha_registro", updatable = false)
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaRegistro;
 
     @Column(name = "fecha_modificacion")
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
   
     private static final long serialVersionUID = 1L;

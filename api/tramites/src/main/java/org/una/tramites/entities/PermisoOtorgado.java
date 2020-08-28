@@ -48,8 +48,8 @@ class PermisoOtorgado implements Serializable {
     private Permiso permiso; 
     
     @Column(name = "fecha_registro", updatable = false)
-    @Temporal(TemporalType.DATE)
     @Setter(AccessLevel.NONE)
+    @Temporal(TemporalType.TIMESTAMP) 
     private Date fechaRegistro; 
  
      @OneToMany(mappedBy = "permisoOtorgado", cascade = CascadeType.ALL, orphanRemoval = true) 

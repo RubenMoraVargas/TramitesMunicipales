@@ -23,4 +23,6 @@ public interface IPermisoService {
 
     public void deleteAll();
 
+    public Long countByEstado(boolean estado);
+
 }

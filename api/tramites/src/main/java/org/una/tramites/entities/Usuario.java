@@ -3,6 +3,7 @@ package org.una.tramites.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,8 +55,8 @@ class Usuario implements Serializable {
     private Departamento departamento; 
     
     @Column(name = "fecha_registro", updatable = false)
-    @Temporal(TemporalType.DATE)
     @Setter(AccessLevel.NONE)
+    @Temporal(TemporalType.TIMESTAMP) 
     private Date fechaRegistro;
  
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true) 
@@ -63,7 +64,7 @@ class Usuario implements Serializable {
     
     @Column(name = "fecha_modificacion")
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP) 
     private Date fechaModificacion;
 
     @Column(name = "es_jefe")
