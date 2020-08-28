@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,7 +17,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.una.tramites.dtos.AuthenticationRequest;
 import org.una.tramites.entities.Usuario;
+import org.una.tramites.jwt.JwtProvider;
 import org.una.tramites.repositories.IUsuarioRepository;
 
 @Service
@@ -24,6 +30,9 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
 
     @Autowired
     private BCryptPasswordEncoder bCrypt;
+
+    @Autowired
+    JwtProvider jwtProvider;
 
     private Usuario encriptarPassword(Usuario usuario) {
         String password = usuario.getPasswordEncriptado();
@@ -90,12 +99,6 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Usuario> login(Usuario usuario) {
-        return Optional.ofNullable(usuarioRepository.findByCedulaAndPasswordEncriptado(usuario.getCedula(), usuario.getPasswordEncriptado()));
-    }
-
-    @Override
     public Optional<List<Usuario>> findByDepartamentoId(Long id) {
         return usuarioRepository.findByDepartamentoId(id);
     }
@@ -123,5 +126,19 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
     @Override
     public Optional<Usuario> findByCedula(String cedula) {
         return usuarioRepository.findByCedula(cedula);
+    }
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Override
+    public String login(AuthenticationRequest authenticationRequest) {
+
+        Authentication authentication = authenticationManager
+                .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getCedula(), authenticationRequest.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtProvider.generateToken(authenticationRequest);
+       //TODO: Cargar los usuarios y permisos y devolver un autentication response
+//        UserDetails userDetails = (UserDetails)authentication.getPrincipal();
+//        JwtDto jwtDto = new JwtDto(jwt, userDetails.getUsername(), userDetails.getAuthorities());
     }
 }
