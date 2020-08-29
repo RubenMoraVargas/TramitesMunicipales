@@ -2,7 +2,6 @@ package org.una.tramites.entities;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -44,8 +43,8 @@ class Transaccion implements Serializable {
     private String informacion; 
     
     @Column(name = "fecha_registro", updatable = false)
+    @Temporal(TemporalType.DATE)
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.TIMESTAMP) 
     private Date fechaRegistro;
     
     private static final long serialVersionUID = 1L;

@@ -43,8 +43,8 @@ class Departamento implements Serializable {
     private boolean estado;
 
     @Column(name = "fecha_registro", updatable = false)
+    @Temporal(TemporalType.DATE)
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.TIMESTAMP) 
     private Date fechaRegistro;
  
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamento") 
@@ -52,7 +52,7 @@ class Departamento implements Serializable {
     
     @Column(name = "fecha_modificacion")
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.TIMESTAMP) 
+    @Temporal(TemporalType.DATE)
     private Date fechaModificacion;
  
     private static final long serialVersionUID = 1L;

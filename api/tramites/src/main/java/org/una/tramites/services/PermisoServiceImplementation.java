@@ -62,15 +62,8 @@ public class PermisoServiceImplementation implements IPermisoService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Permiso> findByCodigo(String codigo) {
         return permisoRepository.findByCodigo(codigo);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Long countByEstado(boolean estado) {
-     return permisoRepository.countByEstado(estado);
     }
 
 }

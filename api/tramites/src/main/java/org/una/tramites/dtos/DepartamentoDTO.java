@@ -1,6 +1,5 @@
 package org.una.tramites.dtos;
  
-
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
