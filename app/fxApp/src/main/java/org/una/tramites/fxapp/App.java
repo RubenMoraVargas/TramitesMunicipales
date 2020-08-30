@@ -1,4 +1,4 @@
-package org.una.tramites.tramitesapp;
+package org.una.tramites.fxapp;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-package org.una.tramites.tramitesapp;
+package org.una.tramites.fxapp;
 
 import java.io.IOException;
 import javafx.fxml.FXML;
