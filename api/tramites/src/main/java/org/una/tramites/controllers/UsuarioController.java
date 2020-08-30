@@ -82,6 +82,7 @@ public class UsuarioController {
         try {
             AuthenticationResponse authenticationResponse = new AuthenticationResponse();
             String token = usuarioService.login(authenticationRequest);
+            System.out.println("org.una.tramites.controllers.UsuarioController.login()");
             if (!token.isBlank()) {
                 authenticationResponse.setJwt(token);
                 //TODO: Complete this   authenticationResponse.setUsuario(token);

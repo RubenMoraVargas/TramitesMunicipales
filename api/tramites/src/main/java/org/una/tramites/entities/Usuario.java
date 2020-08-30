@@ -54,7 +54,7 @@ class Usuario implements Serializable {
     private Departamento departamento; 
     
     @Column(name = "fecha_registro", updatable = false)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Setter(AccessLevel.NONE)
     private Date fechaRegistro;
  
@@ -63,7 +63,7 @@ class Usuario implements Serializable {
     
     @Column(name = "fecha_modificacion")
     @Setter(AccessLevel.NONE)
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
 
     @Column(name = "es_jefe")

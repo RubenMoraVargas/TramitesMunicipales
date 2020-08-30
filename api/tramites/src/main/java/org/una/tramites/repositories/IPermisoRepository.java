@@ -16,4 +16,5 @@ public interface IPermisoRepository extends JpaRepository<Permiso, Long> {
 
     public Optional<List<Permiso>> findByFechaModificacionBetween(Date startDate, Date endDate);
 
+    public Long countByEstado(boolean estado);
 }

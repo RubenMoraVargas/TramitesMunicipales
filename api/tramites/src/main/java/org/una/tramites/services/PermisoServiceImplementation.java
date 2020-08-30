@@ -51,7 +51,7 @@ public class PermisoServiceImplementation implements IPermisoService {
 
     @Override
     @Transactional
-    public void delete(Long id) { 
+    public void delete(Long id) {
         permisoRepository.deleteById(id);
     }
 
@@ -62,8 +62,14 @@ public class PermisoServiceImplementation implements IPermisoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Permiso> findByCodigo(String codigo) {
         return permisoRepository.findByCodigo(codigo);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Long countByEstado(boolean estado) {
+        return permisoRepository.countByEstado(estado);
+    }
 }

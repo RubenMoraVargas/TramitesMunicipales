@@ -1,4 +1,4 @@
-package org.una.tramites.components;
+package org.una.tramites.loaders;
 
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,26 +40,26 @@ public class DataLoader implements ApplicationRunner {
             final String codigo = "Usu01"; 
             Optional<Permiso> permisoBuscado = permisoService.findByCodigo(codigo);
 
-            if (permisoBuscado.isEmpty()) { 
-                permiso = new Permiso();
-                permiso.setCodigo(codigo);
-                permiso.setDescripcion("Registrar usuario nuevo");
-                permiso = permisoService.create(permiso);
-
-            } else {
-                permiso = permisoBuscado.get();
-            }
+//            if (permisoBuscado.isEmpty()) { 
+//                permiso = new Permiso();
+//                permiso.setCodigo(codigo);
+//                permiso.setDescripcion("Registrar usuario nuevo");
+//                permiso = permisoService.create(permiso);
+//
+//            } else {
+//                permiso = permisoBuscado.get();
+//            }
             
             Usuario usuario = new Usuario();
             usuario.setNombreCompleto("Usuario Admin");
             usuario.setCedula(cedula);
             usuario.setPasswordEncriptado(password);
-            usuario = usuarioService.create(usuario);
+            usuarioService.create(usuario);
 
-            PermisoOtorgado permisoOtorgado = new PermisoOtorgado();
-            permisoOtorgado.setPermiso(permiso);
-            permisoOtorgado.setUsuario(usuario);
-            permisoOtorgadoService.create(permisoOtorgado);
+//            PermisoOtorgado permisoOtorgado = new PermisoOtorgado();
+//            permisoOtorgado.setPermiso(permiso);
+//            permisoOtorgado.setUsuario(usuario);
+//            permisoOtorgadoService.create(permisoOtorgado);
 
             System.out.println("Se agrega el usuario inicial");
         } else {
