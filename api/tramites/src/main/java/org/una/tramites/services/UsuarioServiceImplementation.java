@@ -117,8 +117,6 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<Usuario> usuarioBuscado = usuarioRepository.findByCedula(username);
         if (usuarioBuscado.isPresent()) {
-            System.out.println(username+ "org.una.tramites.services.UsuarioServiceImplementation.loadUserByUsername()");
-        
             Usuario usuario = usuarioBuscado.get();
              System.out.println(usuario);
             List<GrantedAuthority> roles = new ArrayList<>();
@@ -127,8 +125,6 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
            System.out.println(userDetails);
             return userDetails;
         } else {
-            System.out.println("org.una.tramites.services.UsuarioServiceImplementation.loadUserByUsername()");
-        
             return null;
         }
 

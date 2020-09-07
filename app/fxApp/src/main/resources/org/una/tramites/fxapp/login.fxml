@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+
+<fx:root id="loginPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="305.0" prefWidth="278.0" type="Pane" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.una.tramites.fxapp.controllers.LoginController">
+   <children>
+      <Label id="passwordLabel" layoutX="22.0" layoutY="136.0" text="Contraseña:" />
+      <Button id="iniciarButton" layoutX="102.0" layoutY="204.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="149.0" text="Iniciar Sesión" />
+      <TextField id="passwordTextField" accessibleRole="PASSWORD_FIELD" layoutX="25.0" layoutY="163.0" prefHeight="25.0" prefWidth="226.0" />
+      <TextField id="cedulaTextField" layoutX="22.0" layoutY="106.0" prefHeight="25.0" prefWidth="232.0" />
+      <Label id="cedulaLabel" layoutX="22.0" layoutY="79.0" text="Cédula:" />
+      <Label id="tituloLabel" layoutX="52.0" layoutY="22.0" text="Inicio de Sesión">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+   </children>
+</fx:root>
