@@ -81,7 +81,6 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
     @Override
     @Transactional
     public void delete(Long id) {
-
         usuarioRepository.deleteById(id);
     }
 
@@ -109,11 +108,12 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
         Optional<Usuario> usuarioBuscado = usuarioRepository.findByCedula(username);
         if (usuarioBuscado.isPresent()) {
             Usuario usuario = usuarioBuscado.get();
-            System.out.println(usuario);
             List<GrantedAuthority> roles = new ArrayList<>();
-            roles.add(new SimpleGrantedAuthority("ADMIN"));
+
+            usuario.getPermisosOtorgados().forEach(permisoOtorgado -> {
+                roles.add(new SimpleGrantedAuthority(permisoOtorgado.getPermiso().getCodigo()));
+            });
             UserDetails userDetails = new User(usuario.getCedula(), usuario.getPasswordEncriptado(), roles);
-            System.out.println(userDetails);
             return userDetails;
         } else {
             return null;

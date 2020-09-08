@@ -51,12 +51,12 @@ public class DataLoader implements ApplicationRunner {
 
             Permiso permiso;
 
-            Optional<Permiso> permisoBuscado = permisoService.findByCodigo(Permisos.CREAR_USUARIO.getCodigo());
+            Optional<Permiso> permisoBuscado = permisoService.findByCodigo(Permisos.USUARIO_CREAR.getCodigo());
 
             if (permisoBuscado.isEmpty()) {
                 permiso = new Permiso();
-                permiso.setCodigo(Permisos.CREAR_USUARIO.getCodigo());
-                permiso.setDescripcion(Permisos.CREAR_USUARIO.name());
+                permiso.setCodigo(Permisos.USUARIO_CREAR.getCodigo());
+                permiso.setDescripcion(Permisos.USUARIO_CREAR.name());
                 permiso = permisoService.create(permiso);
 
             } else {

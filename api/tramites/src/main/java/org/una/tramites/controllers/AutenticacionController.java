@@ -17,6 +17,7 @@ import org.una.tramites.dtos.UsuarioDTO;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.una.tramites.dtos.AuthenticationResponse;
 import org.una.tramites.services.IAutenticacionService;
 
@@ -41,8 +42,10 @@ public class AutenticacionController {
                 return new ResponseEntity(authenticationResponse, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>("No se encontro la información del usuario para autenticarlo correctamente", HttpStatus.UNAUTHORIZED);
-            }
-//TODO:Revisar el error de credenciales incorrectos
+            } 
+        } catch (BadCredentialsException e) {
+            return new ResponseEntity<>("Los credenciales son incorrectos", HttpStatus.UNAUTHORIZED);
+
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }

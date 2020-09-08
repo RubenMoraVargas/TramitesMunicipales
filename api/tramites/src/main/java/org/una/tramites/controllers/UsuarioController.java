@@ -22,8 +22,9 @@ import org.una.tramites.entities.Usuario;
 import org.una.tramites.services.IUsuarioService;
 import org.una.tramites.utils.MapperUtils;
 
-
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -35,8 +36,9 @@ public class UsuarioController {
 
     @GetMapping("/")
     @ApiOperation(value = "Obtiene una lista de todos los Usuarios", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
-    public @ResponseBody
-    ResponseEntity<?> findAll() {
+    @ResponseBody
+    @PreAuthorize("hasAuthority('USUARIO_CONSULTAR_TODO')")
+    public ResponseEntity<?> findAll() {
         try {
             Optional<List<Usuario>> result = usuarioService.findAll();
             if (result.isPresent()) {
@@ -45,12 +47,16 @@ public class UsuarioController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+            //TODO Escalar las excepciones para que todo lo resuelva una misma clases
+//        } catch (AccessDeniedException e) {
+//            return new ResponseEntity<>("Se requiere un permiso adicional para realizar esta acción", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
-            return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(e.getClass(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('USUARIO_CONSULTAR')")
     @ApiOperation(value = "Obtiene un Usuario por su Id", response = UsuarioDTO.class, tags = "Usuarios")
     public ResponseEntity<?> findById(@PathVariable(value = "id") Long id) {
         try {
@@ -62,13 +68,16 @@ public class UsuarioController {
             } else {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>("No tiene los permisos necesarios para ingresar a este recurso", HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-  
+
     @GetMapping("/cedula/{termino}")
     @ApiOperation(value = "Obtiene una lista de Usuarios por cédula", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_CONSULTAR.getCodigo())")
     public ResponseEntity<?> findByCedulaAproximate(@PathVariable(value = "termino") String term) {
         try {
             Optional<List<Usuario>> result = usuarioService.findByCedulaAproximate(term);
@@ -85,6 +94,7 @@ public class UsuarioController {
 
     @GetMapping("/nombre/{termino}")
     @ApiOperation(value = "Obtiene una lista de Usuarios por nombre completo", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_CONSULTAR.getCodigo())")
     public ResponseEntity<?> findByNombreCompletoAproximateIgnoreCase(@PathVariable(value = "termino") String term) {
         try {
             Optional<List<Usuario>> result = usuarioService.findByNombreCompletoAproximateIgnoreCase(term);
@@ -102,6 +112,7 @@ public class UsuarioController {
     @PostMapping("/")
     @ApiOperation(value = "Permite crear un Usuario", response = UsuarioDTO.class, tags = "Usuarios")
     @ResponseBody
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_CREAR.getCodigo())")
     public ResponseEntity<?> create(@RequestBody Usuario usuario) {
         try {
             Usuario usuarioCreated = usuarioService.create(usuario);
@@ -115,6 +126,7 @@ public class UsuarioController {
     @PutMapping("/{id}")
     @ApiOperation(value = "Permite modificar un Usuario a partir de su Id", response = UsuarioDTO.class, tags = "Usuarios")
     @ResponseBody
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_MODIFICAR.getCodigo())")
     public ResponseEntity<?> update(@PathVariable(value = "id") Long id, @RequestBody Usuario usuarioModified) {
         try {
             Optional<Usuario> usuarioUpdated = usuarioService.update(usuarioModified, id);
@@ -133,10 +145,13 @@ public class UsuarioController {
 
     @DeleteMapping("/{id}")
     @ApiOperation(value = "Permite eliminar un Usuario a partir de su Id", response = UsuarioDTO.class, tags = "Usuarios")
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_ELIMINAR.getCodigo())")
     public ResponseEntity<?> delete(@PathVariable(value = "id") Long id) {
         try {
             usuarioService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (AccessDeniedException e) {
+            return new ResponseEntity<>("No tiene los permisos necesarios para ingresar a este recurso", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -144,6 +159,7 @@ public class UsuarioController {
 
     @DeleteMapping("/")
     @ApiOperation(value = "Permite eliminar todos los Usuarios", response = UsuarioDTO.class, tags = "Usuarios")
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_ELIMINAR_TODO.getCodigo())")
     public ResponseEntity<?> deleteAll() {
         try {
             usuarioService.deleteAll();
@@ -155,6 +171,7 @@ public class UsuarioController {
 
     @GetMapping("/departamento/jefe/{id}")
     @ApiOperation(value = "Obtiene el Usuario que sea jefe del Departamento correspondiente al Id", response = UsuarioDTO.class, tags = "Usuarios")
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_CONSULTAR.getCodigo())")
     public ResponseEntity<?> findJefeByDepartamento(@PathVariable(value = "id") Long id) {
         try {
 
@@ -172,6 +189,7 @@ public class UsuarioController {
 
     @GetMapping("/departamento/{id}")
     @ApiOperation(value = "Obtiene una lista de Usuarios por Id del Departamento", response = UsuarioDTO.class, responseContainer = "List", tags = "Usuarios")
+    @PreAuthorize("hasAuthority(Permisos.USUARIO_CONSULTAR.getCodigo())")
     public ResponseEntity<?> findByDepartamentoId(@PathVariable(value = "id") Long id) {
         try {
             Optional<List<Usuario>> result = usuarioService.findByDepartamentoId(id);
