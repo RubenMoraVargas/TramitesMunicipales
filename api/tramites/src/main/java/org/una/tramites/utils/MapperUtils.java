@@ -22,6 +22,9 @@ public class MapperUtils {
         return modelMapper.map(entity, dtoClass);
     }
 
+    public static <E, D> E EntityFromDto(final D dto, Class<E> entityClass) {
+        return modelMapper.map(dto, entityClass);
+    }
     public static <D, E> List<D> DtoListFromEntityList(final Collection<E> entityList, Class<D> dtoClass) {
         return entityList.stream()
                 .map(entity -> DtoFromEntity(entity, dtoClass))

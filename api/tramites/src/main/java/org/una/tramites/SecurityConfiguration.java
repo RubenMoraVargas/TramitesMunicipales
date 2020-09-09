@@ -65,7 +65,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                         "/webjars/**").permitAll()
                 .anyRequest().authenticated().and()
                 .exceptionHandling().accessDeniedHandler(new CustomAccessDeniedHandler()).and()
-                .exceptionHandling().authenticationEntryPoint(entryPoint).and()
+                .exceptionHandling().authenticationEntryPoint(entryPoint).and() 
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

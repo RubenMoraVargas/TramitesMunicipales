@@ -18,7 +18,8 @@ public class UsuarioDTO {
     private boolean estado;
     private Date fechaRegistro;
     private Date fechaModificacion;
-    private Long departamentoId;
+    private DepartamentoDTO departamento;
     private boolean esJeFe;
+    private String passwordEncriptado;
 
 }

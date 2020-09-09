@@ -13,8 +13,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.una.tramites.dtos.PermisoOtorgadoDTO;
+import org.una.tramites.dtos.UsuarioDTO;
+import org.una.tramites.entities.PermisoOtorgado;
 import org.una.tramites.entities.Usuario;
 import org.una.tramites.repositories.IUsuarioRepository;
+import org.una.tramites.utils.MapperUtils;
 
 @Service
 public class UsuarioServiceImplementation implements UserDetailsService, IUsuarioService {
@@ -25,57 +29,125 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
     @Autowired
     private BCryptPasswordEncoder bCrypt;
 
-    private Usuario encriptarPassword(Usuario usuario) {
+    private UsuarioDTO encriptarPassword(UsuarioDTO usuario) {
         String password = usuario.getPasswordEncriptado();
-        System.err.println(usuario.getPasswordEncriptado());
         if (!password.isBlank()) {
             usuario.setPasswordEncriptado(bCrypt.encode(password));
-            System.err.println(usuario.getPasswordEncriptado());
         }
         return usuario;
     }
+//TODO:PASAR findList() A GENERICA EN OTRA CLASE  
 
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<List<Usuario>> findAll() {
-        return Optional.ofNullable(usuarioRepository.findAll());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Usuario> findById(Long id) {
-        return usuarioRepository.findById(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<List<Usuario>> findByCedulaAproximate(String cedula) {
-        return usuarioRepository.findByCedulaContaining(cedula);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<List<Usuario>> findByNombreCompletoAproximateIgnoreCase(String nombreCompleto) {
-        return usuarioRepository.findByNombreCompletoContainingIgnoreCase(nombreCompleto);
-    }
-
-    @Override
-    @Transactional
-    public Usuario create(Usuario usuario) {
-        usuario = encriptarPassword(usuario);
-        return usuarioRepository.save(usuario);
-    }
-
-    @Override
-    @Transactional
-    public Optional<Usuario> update(Usuario usuario, Long id) {
-        if (usuarioRepository.findById(id).isPresent()) {
-            usuario = encriptarPassword(usuario);
-            return Optional.ofNullable(usuarioRepository.save(usuario));
+    private Optional<List<UsuarioDTO>> findList(List<Usuario> list) {
+        if (list != null) {
+            List<UsuarioDTO> usuariosDTO = MapperUtils.DtoListFromEntityList(list, UsuarioDTO.class);
+            return Optional.ofNullable(usuariosDTO);
         } else {
             return null;
         }
+    }
 
+    private Optional<List<UsuarioDTO>> findList(Optional<List<Usuario>> list) {
+        if (list.isPresent()) {
+            return findList(list.get());
+        } else {
+            return null;
+        }
+    }
+
+    private Optional<UsuarioDTO> oneToDto(Optional<Usuario> one) {
+        if (one.isPresent()) {
+            UsuarioDTO usuarioDTO = MapperUtils.DtoFromEntity(one.get(), UsuarioDTO.class);
+            return Optional.ofNullable(usuarioDTO);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<List<UsuarioDTO>> findAll() {
+        return findList(usuarioRepository.findAll());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UsuarioDTO> findById(Long id) {
+        return oneToDto(usuarioRepository.findById(id));
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<List<UsuarioDTO>> findByCedulaAproximate(String cedula) {
+        return findList(usuarioRepository.findByCedulaContaining(cedula));
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<List<UsuarioDTO>> findByNombreCompletoAproximateIgnoreCase(String nombreCompleto) {
+        return findList(usuarioRepository.findByNombreCompletoContainingIgnoreCase(nombreCompleto));
+
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<List<UsuarioDTO>> findByDepartamentoId(Long id) {
+        return findList(usuarioRepository.findByDepartamentoId(id));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UsuarioDTO> findJefeByDepartamento(Long id) {
+        Optional<Usuario> result = usuarioRepository.findJefeByDepartamento(id);
+        if (result != null) {
+            UsuarioDTO usuarioDTO = MapperUtils.DtoFromEntity(result.get(), UsuarioDTO.class);
+            return Optional.ofNullable(usuarioDTO);
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Optional<UsuarioDTO> findByCedula(String cedula) { 
+        return oneToDto(usuarioRepository.findByCedula(cedula)); 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PermisoOtorgadoDTO> findPermisosOtorgadosByCedula(String cedula) {
+        Optional<Usuario> result = usuarioRepository.findByCedula(cedula);
+        if (result != null) {
+            List<PermisoOtorgado> permisos = result.get().getPermisosOtorgados();
+            List<PermisoOtorgadoDTO> permisosDTO = MapperUtils.DtoListFromEntityList(permisos, PermisoOtorgadoDTO.class);
+            return permisosDTO;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    @Transactional
+    public UsuarioDTO create(UsuarioDTO usuarioDTO) {
+        usuarioDTO = encriptarPassword(usuarioDTO);
+        Usuario usuario = MapperUtils.EntityFromDto(usuarioDTO, Usuario.class);
+        usuario = usuarioRepository.save(usuario);
+        return MapperUtils.DtoFromEntity(usuario, UsuarioDTO.class);
+    }
+
+    @Override
+    @Transactional
+    public Optional<UsuarioDTO> update(UsuarioDTO usuarioDTO, Long id) {
+        if (usuarioRepository.findById(id).isPresent()) {
+            usuarioDTO = encriptarPassword(usuarioDTO);
+            Usuario usuario = MapperUtils.EntityFromDto(usuarioDTO, Usuario.class);
+            usuario = usuarioRepository.save(usuario);
+            return Optional.ofNullable(MapperUtils.DtoFromEntity(usuario, UsuarioDTO.class));
+        } else {
+            return null;
+        } 
     }
 
     @Override
@@ -88,18 +160,6 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
     @Transactional
     public void deleteAll() {
         usuarioRepository.deleteAll();
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<List<Usuario>> findByDepartamentoId(Long id) {
-        return usuarioRepository.findByDepartamentoId(id);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Usuario> findJefeByDepartamento(Long id) {
-        return Optional.ofNullable(usuarioRepository.findJefeByDepartamento(id));
     }
 
     @Override
@@ -119,11 +179,4 @@ public class UsuarioServiceImplementation implements UserDetailsService, IUsuari
             return null;
         }
     }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Optional<Usuario> findByCedula(String cedula) {
-        return usuarioRepository.findByCedula(cedula);
-    }
-
 }

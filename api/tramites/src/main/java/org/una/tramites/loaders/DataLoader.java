@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import org.una.tramites.entities.Permiso;
-import org.una.tramites.entities.PermisoOtorgado;
-import org.una.tramites.entities.Usuario;
+import org.una.tramites.dtos.PermisoDTO;
+import org.una.tramites.dtos.PermisoOtorgadoDTO;
+import org.una.tramites.dtos.UsuarioDTO;
 import org.una.tramites.services.IPermisoOtorgadoService;
 import org.una.tramites.services.IPermisoService;
 import org.una.tramites.services.IUsuarioService;
@@ -33,7 +33,7 @@ public class DataLoader implements ApplicationRunner {
 
     private void createPermisos() {
         for (Permisos permiso : Permisos.values()) {
-            Permiso nuevoPermiso = new Permiso();
+            PermisoDTO nuevoPermiso = new PermisoDTO();
             nuevoPermiso.setCodigo(permiso.getCodigo());
             nuevoPermiso.setDescripcion(permiso.name());
             permisoService.create(nuevoPermiso);
@@ -49,12 +49,12 @@ public class DataLoader implements ApplicationRunner {
 
         if (usuarioService.findByCedula(cedula).isEmpty()) {
 
-            Permiso permiso;
+            PermisoDTO permiso;
 
-            Optional<Permiso> permisoBuscado = permisoService.findByCodigo(Permisos.USUARIO_CREAR.getCodigo());
+            Optional<PermisoDTO> permisoBuscado = permisoService.findByCodigo(Permisos.USUARIO_CREAR.getCodigo());
 
             if (permisoBuscado.isEmpty()) {
-                permiso = new Permiso();
+                permiso = new PermisoDTO();
                 permiso.setCodigo(Permisos.USUARIO_CREAR.getCodigo());
                 permiso.setDescripcion(Permisos.USUARIO_CREAR.name());
                 permiso = permisoService.create(permiso);
@@ -62,13 +62,13 @@ public class DataLoader implements ApplicationRunner {
             } else {
                 permiso = permisoBuscado.get();
             }
-            Usuario usuario = new Usuario();
+            UsuarioDTO usuario = new UsuarioDTO();
             usuario.setNombreCompleto("Usuario Admin");
             usuario.setCedula(cedula);
             usuario.setPasswordEncriptado(password);
             usuarioService.create(usuario);
 
-            PermisoOtorgado permisoOtorgado = new PermisoOtorgado();
+            PermisoOtorgadoDTO permisoOtorgado = new PermisoOtorgadoDTO();
             permisoOtorgado.setPermiso(permiso);
             permisoOtorgado.setUsuario(usuario);
             permisoOtorgadoService.create(permisoOtorgado);
